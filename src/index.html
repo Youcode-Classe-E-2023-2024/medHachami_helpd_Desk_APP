@@ -18,8 +18,26 @@
     <div id="app"></div>
 
     <script type="module" src="./static/js/index.js"></script>
-    <script type="module" src="./static/js/register.js"></script>
-    <script type="module" src="./static/js/login.js"></script>
+    <!-- <script>
+        // Get the current pathname
+        const currentPage = window.location.pathname;
+    
+        // Define a mapping of pages to script files
+        const scriptMap = {
+            '/register': '/static/js/register.js',
+            '/login': '/static/js/login.js',
+            // Add more mappings as needed
+        };
+    
+        // Load the corresponding script if it exists in the mapping
+        if (scriptMap[currentPage]) {
+            const scriptElement = document.createElement('script');
+            scriptElement.src = scriptMap[currentPage];
+            document.head.appendChild(scriptElement);
+        }
+    </script> -->
+    <!-- <script type="module" src="./static/js/register.js"></script>
+    <script type="module" src="./static/js/login.js"></script> -->
     
 </body>
 </html>
