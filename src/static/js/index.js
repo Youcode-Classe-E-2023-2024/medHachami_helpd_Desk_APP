@@ -1,8 +1,37 @@
 import Dashboard from "../../Components/Dashboard.js";
-import Posts from "../../Components/Posts.js";
-import PostView from "../../Components/PostView.js";
 import Login from "../../Components/Login.js";
 import Register from "../../Components/Register.js";
+
+const scriptMap = {
+    '/login': '/static/js/login.js',
+    '/register': '/static/js/register.js',
+    // Add more mappings as needed
+};
+
+const loadedScripts = new Set();
+
+const loadScriptOnce = (scriptPath) => {
+    return new Promise((resolve, reject) => {
+        if (loadedScripts.has(scriptPath)) {
+            // Script has already been loaded, resolve immediately
+            resolve();
+            return;
+        }
+
+        const scriptElement = document.createElement('script');
+        scriptElement.src = scriptPath;
+        scriptElement.onload = () => {
+            // Script loaded successfully, resolve the promise and mark it as loaded
+            loadedScripts.add(scriptPath);
+            resolve();
+        };
+        scriptElement.onerror = reject;
+
+        // Append the script to the body to initiate loading
+        document.body.appendChild(scriptElement);
+    });
+};
+
 function removeTrailingSlash(url) {
     
     if (url.charAt(url.length - 1) === '/') {
@@ -48,7 +77,7 @@ const NavigateTo = (url) => {
 //Router 
 const router = async () =>{
     const routes = [
-        // { path: '/Dashboard' , view : Dashboard},
+        { path: '/' , view : Dashboard},
         { path: '/login' , view : Login},
         { path: '/register' , view : Register},
         // { path: '/posts/:id' ,   view: PostView },
@@ -65,6 +94,11 @@ const router = async () =>{
     })
 
     let target = routeExists.find((routeExist)=>routeExist.result !== null);
+
+    const scriptPath = scriptMap[target.route.path];
+    if (scriptPath) {
+        await loadScriptOnce(scriptPath);
+    }
 
     //Not found 
     if(!target){
