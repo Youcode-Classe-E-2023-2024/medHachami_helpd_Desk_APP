@@ -65,7 +65,7 @@ export default class extends AbstractView{
                         </div>
               
                         <!-- Submit button -->
-                        <button type="submit"  id="submitBtn" class="btn btn-primary btn-lg btn-block">Sign in</button>
+                        <button type="submit" onclick="register()" id="submitBtn" class="btn btn-primary btn-lg btn-block">Sign in</button>
                         
               
                         
