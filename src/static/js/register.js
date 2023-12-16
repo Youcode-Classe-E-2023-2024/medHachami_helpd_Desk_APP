@@ -1,3 +1,4 @@
+// console.log('register');
 
 
 const apiUrl = "http://localhost/med_Hachami_HelpDesk_Ticketing_Sys/";
@@ -5,11 +6,8 @@ const apiUrl = "http://localhost/med_Hachami_HelpDesk_Ticketing_Sys/";
 
 
 
-document.addEventListener('DOMContentLoaded', () =>{
-    
-    const submitBtn = document.getElementById("submitBtn");
-    const myForm = document.getElementById("registerForm");
-    submitBtn.addEventListener('click', () =>{
+function register(){
+    console.log('clickeMe');
     let email = document.getElementById("email").value;
     let full_Name = document.getElementById("full_Name").value;
     let password = document.getElementById("password").value;
@@ -21,7 +19,13 @@ document.addEventListener('DOMContentLoaded', () =>{
     let confirm_password_error = document.getElementById("pass_confirm_eror");
 
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    email_error.textContent = '';
+    full_Name_error.textContent = '';
+    password_error.textContent = '';
+    confirm_password_error.textContent = '';
+
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const validEmail = emailRegex.test(email);
         
 
@@ -41,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () =>{
         }
         
         
-        if(email_error ==='' && full_Name_error === '' && password_error ==='' && confirm_password_error ===''){
+        if(email_error.textContent === '' && full_Name_error.textContent === '' && password_error.textContent === '' && confirm_password_error.textContent === ''){
             const data = {
                 "email": email,
                 "full_name": full_Name,
@@ -57,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () =>{
                 body: JSON.stringify(data),
             };
             
+            console.log(data);
 
             fetch(`${apiUrl}` + 'Users/register',requestOptions)
             .then(response => {
@@ -94,27 +99,4 @@ document.addEventListener('DOMContentLoaded', () =>{
             });
         //     alert(data);
         }
-
-
-        const loginBtn = document.getElementById("loginBtn");
-    
-        loginBtn.addEventListener('click', () =>{
-            let email = document.getElementById("email").value;
-            let password = document.getElementById("pwd").value;
-
-            console.log(email , password);
-
-
-        });
-
-
-        
-
-        
-
-    
-    });
-
-    
-
-});
+}
