@@ -206,5 +206,7 @@ background: #eee;
     top: 10%;
     display: none;
 }
-
+.error{
+  border-bottom: 3px solid red;
+}
 /* End register / login */
