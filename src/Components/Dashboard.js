@@ -4,13 +4,18 @@ export default class extends AbstractView{
     constructor(params){
         super(params);
         this.setTitle('Dashboard');
+        const token = localStorage.getItem('token');
+        if(!token){
+            window.location.href = '/login';
+        }
+
     }
 
     async getHtml(){
         return(
             `
-        <div class="text-red-950">
-            <h1>Dashboard</h1>
+        <div >
+            <h1 >Dashboard</h1>
         
         </div>
         `
