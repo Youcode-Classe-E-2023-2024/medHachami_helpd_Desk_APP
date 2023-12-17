@@ -44,6 +44,7 @@ function register(ev){
         if(password !== confirm_password){
             confirm_password_error.textContent = "*Password does not match";
         }
+
         
         
         if(email_error.textContent === '' && full_Name_error.textContent === '' && password_error.textContent === '' && confirm_password_error.textContent === ''){
@@ -66,28 +67,29 @@ function register(ev){
 
             fetch(`${apiUrl}` + 'Users/register',requestOptions)
             .then(response => {
-                // Check if the request was successful (status code in the range 200-299)
+                
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-                // Parse the JSON response
+                
                 return response.json();
             })
             .then(data => {
                 if(data.message_1){
                     let alert = document.getElementById("alert1");
                     alert.textContent = data.message_1;
-                    alert.style.display = "block";
+                    alert.classList.add('show');
                     setTimeout(() => {
-                        alert.style.display = 'none';
+                        alert.classList.remove('show');
                     }, 4000);
                     console.log('Response:', data);
                 }else{
                     let alert = document.getElementById("alert2");
                     alert.textContent = data.message_2;
-                    alert.style.display = "block";
+                    alert.classList.add('show');
+                    
                     setTimeout(() => {
-                        alert.style.display = 'none';
+                        alert.classList.remove('show');
                     }, 4000);
                      email.value = ''
                      full_Name.value ='';
