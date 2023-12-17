@@ -47,6 +47,11 @@ function login(ev){
             .then(data => {
                     if(data.token){
                         localStorage.setItem('token', data.token);
+                        const decodedPayload = decodeJWT(data.token);
+                        localStorage.setItem('id' ,decodedPayload.data.id);
+                        localStorage.setItem('fullName' ,decodedPayload.data.full_name);
+                        localStorage.setItem('email' ,decodedPayload.data.email);
+
                         window.location.href = '/';
                     }else{
                         input_error.textContent = "*Credentials not valid ! try again"; 
@@ -60,3 +65,14 @@ function login(ev){
 
     console.log(email + " " + password);
 }   
+
+function decodeJWT(token) {
+    
+    const [header, payload, signature] = token.split('.');
+    const decodedPayload = JSON.parse(atob(payload));
+  
+    
+    return decodedPayload;
+}
+  
+ 
