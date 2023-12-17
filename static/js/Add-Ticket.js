@@ -1,5 +1,6 @@
 let selectedUserIds = [];
 const apiurl = "http://localhost/med_Hachami_HelpDesk_Ticketing_Sys/";
+const token = localStorage.getItem('token');
 function allowDrop(event) {
   event.preventDefault();
 }
@@ -7,10 +8,10 @@ function allowDrop(event) {
 function drop(event) {
   event.preventDefault();
   const draggedUserData = JSON.parse(event.dataTransfer.getData("text/plain"));
-  console.log("Dragged User Data:", draggedUserData);
+  // console.log("Dragged User Data:", draggedUserData);
 
   const draggedUserId = draggedUserData.userId;
-  console.log(draggedUserId);
+  // console.log(draggedUserId);
 
   const selectedUsersList = document.getElementById("selected-users");
 
@@ -51,7 +52,7 @@ function drop(event) {
     // Store the user ID
     selectedUserIds.push(draggedUserId);
 
-    console.log(selectedUserIds);
+    // console.log(selectedUserIds);
   }
 }
 
@@ -70,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const statusDropDown = document.getElementById("status");
   const tagDropDown = document.getElementById("tag");
   const priorityDropDown = document.getElementById("priority");
-  const token = localStorage.getItem('token');
+  
   const requestOptions = {
     method: 'GET',
     headers: {
@@ -142,7 +143,8 @@ document.addEventListener("DOMContentLoaded", function () {
       .then(response => response.json())
       .then(users => {
           // console.log(users);
-          users.forEach(user => {
+          usersData = users;
+          usersData.forEach(user => {
               const userItem = document.createElement("li");
               userItem.classList.add("user-item", "d-flex", "mb-4", "pb-1");
               userItem.setAttribute("draggable", "true");
@@ -170,10 +172,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 const userName = item.querySelector("h6").textContent;
                 // const imgUrl = item.querySelector("img").getAttribute("src");
           
-                console.log("Dragged User ID:", userId);
-                console.log("Dragged User Src:", userSrc);
-                console.log("Dragged User Name:", userName);
-                // console.log("Dragged User img src:", imgUrl);
+                // console.log("Dragged User ID:", userId);
+                // console.log("Dragged User Src:", userSrc);
+                // console.log("Dragged User Name:", userName);
+              
                 event.dataTransfer.setData("text/plain", JSON.stringify({ userId, userSrc, userName }));
               });
              });
@@ -183,6 +185,90 @@ document.addEventListener("DOMContentLoaded", function () {
           console.error("Error fetching user data:", error);
       });
 
+      
             
 
 });
+
+
+
+
+function addTicket(ev){
+  ev.preventDefault(); 
+  const ticketName = document.getElementById("name").value;
+  const tag = document.getElementById("tag").value; 
+  const status = document.getElementById("status").value; 
+  const priority = document.getElementById("priority").value; 
+  const description = document.getElementById("description").value; 
+
+  let ticketName_error =  document.getElementById("ticketName_error");
+  let description_error = document.getElementById("description_error");
+  let assignedUsers_error = document.getElementById("assignedUsers_error");
+
+
+    ticketName_error.textContent = '';
+    description_error.textContent = '';
+
+  if(!ticketName){
+    ticketName_error.textContent = "*Ticket Name required";
+  }
+
+  if(!description){
+    description_error.textContent = "*description required";
+  }
+  if(selectedUserIds.length == 0){
+    assignedUsers_error.textContent = "*Assigning ticket requires";
+  }
+  if(ticketName_error.textContent === '' && description_error.textContent === '' && assignedUsers_error.textContent === ''){
+
+    
+    const data ={
+      "title": ticketName,
+      "description":description ,
+      "priority":priority,
+      "tag":tag,
+      "creatordId":localStorage.getItem('id'),
+      "assignedTo":selectedUserIds
+    }
+
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+          'Authorization': token, 
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    }
+    fetch(`${apiurl}` + 'Main/newTicket', requestOptions)
+      .then(response =>{
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+          if(data.message){
+            let alert = document.getElementById("alert1");
+            alert.textContent = data.message  ;
+            alert.classList.add('show');
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 4000);
+            console.log('Response:', data);
+          }
+          
+      })
+      .catch(error => {
+          console.log("Error fetching status options:"+ error);
+          
+      });
+  
+    
+  }
+
+  
+  // console.log(selectedUserIds);
+}
+
