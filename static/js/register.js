@@ -8,11 +8,12 @@ const apiUrl = "http://localhost/med_Hachami_HelpDesk_Ticketing_Sys/";
 
 function register(ev){
     ev.preventDefault();
-    console.log('clickeMe');
+    // console.log('clickeMe');
     let email = document.getElementById("email").value;
     let full_Name = document.getElementById("full_Name").value;
     let password = document.getElementById("password").value;
     let confirm_password = document.getElementById("confirm_password").value;
+    let imageInput = document.getElementById("image");
 
     let email_error =  document.getElementById("email_error");
     let full_Name_error = document.getElementById("full_Name_error");
@@ -48,22 +49,18 @@ function register(ev){
         
         
         if(email_error.textContent === '' && full_Name_error.textContent === '' && password_error.textContent === '' && confirm_password_error.textContent === ''){
-            const data = {
-                "email": email,
-                "full_name": full_Name,
-                "password": password
-                
-            }
+            const formData = new FormData();
+            formData.append("email",email);
+            formData.append("password",password);
+            formData.append("full_name" , full_Name);
+            formData.append('image', imageInput.files[0]);
+            
             const requestOptions = {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    
-                },
-                body: JSON.stringify(data),
+                body: formData,
             };
             
-            console.log(data);
+            // console.log(data);
 
             fetch(`${apiUrl}` + 'Users/register',requestOptions)
             .then(response => {
@@ -82,7 +79,11 @@ function register(ev){
                     setTimeout(() => {
                         alert.classList.remove('show');
                     }, 4000);
-                    console.log('Response:', data);
+
+                    email.value = ''
+                    full_Name.value ='';
+                    password.value = ''
+                    confirm_password.value =''
                 }else{
                     let alert = document.getElementById("alert2");
                     alert.textContent = data.message_2;
@@ -98,7 +99,7 @@ function register(ev){
                     console.log('Response:', data);
                 }
                 
-                
+                window.location.href = "login.html";  
             })
             .catch(error => {
                 // Handle errors
