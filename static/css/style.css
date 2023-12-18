@@ -250,5 +250,9 @@ background: #eee;
 .delete-user{
   cursor: pointer;
 }
+.inputfile{
+  height: 100%!important;
+    right: 16px!important;
+}
 
 /* End ticket */
