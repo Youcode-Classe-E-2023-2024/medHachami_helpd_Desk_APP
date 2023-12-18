@@ -1,6 +1,5 @@
 
-const apiurl = "http://localhost/med_Hachami_HelpDesk_Ticketing_Sys/";
-const token = localStorage.getItem('token');
+
 
 
 function diffTime(dateString) {
@@ -24,10 +23,6 @@ function diffTime(dateString) {
     }
 }
 
-// Example usage
-// const ticketCreationTime = "2023-12-18 20:50:13";
-// const formattedDuration = formatTimeSinceCreation(ticketCreationTime);
-// console.log("Time Since Creation:", formattedDuration);
 
 
 
@@ -54,7 +49,7 @@ async function fetchData() {
     try {
         const data = await getResponse();
         tickets = data;
-        console.log(tickets);
+        
         const ticketContainer = document.getElementById("ticketContainer");
         ticketContainer.innerHTML = "";
         const ticketItem = tickets.map((ticket) => {
