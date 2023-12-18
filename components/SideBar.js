@@ -84,7 +84,7 @@ function generateSideBar() {
         <a data-link href="/Assigned.html" class="menu-link menu-toggle">
           <i class='bx bx-message-rounded-edit'></i>
           <div data-i18n="Dashboards">Assigned Tickets</div>
-          
+          <span class="badge bg-danger rounded-pill ms-auto" id="incompTicket">4</span>
         </a>
         
       </li>
@@ -101,3 +101,36 @@ document.addEventListener('DOMContentLoaded', function () {
         sidebar.innerHTML = generateSideBar();
     }
 });
+
+
+const RequestOptions = {
+  method: 'GET',
+  headers: {
+      'Authorization': token, 
+      'Content-Type': 'application/json'
+  }
+}
+
+async function getResponse() {
+  const response = await fetch(`${apiurl}` + 'Main/incompleteTicket/'+ `${id}` ,RequestOptions);
+  if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = await response.json();
+  
+  return data;
+}
+
+async function fetchData() {
+  try {
+      const data = await getResponse();
+      const incompTicket = document.getElementById("incompTicket");
+      incompTicket.textContent = JSON.stringify(data);
+      
+     
+  } catch (error) {
+      console.error('Error:', error);
+  }
+}
+
+fetchData();
