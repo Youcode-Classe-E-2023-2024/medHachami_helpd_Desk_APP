@@ -1,133 +1,126 @@
-import Dashboard from "../../Components/Dashboard.js";
-import Login from "../../Components/Login.js";
-import Register from "../../Components/Register.js";
-import AddTicket from "../../Components/AddTicket.js";
 
-const scriptMap = {
-    '/login': '/static/js/login.js',
-    '/register': '/static/js/register.js',
-    '/Add-Ticket':'/static/js/Add-Ticket.js'
-    // Add more mappings as needed
-};
+const apiurl = "http://localhost/med_Hachami_HelpDesk_Ticketing_Sys/";
+const token = localStorage.getItem('token');
 
-const loadedScripts = new Set();
 
-const loadScriptOnce = (scriptPath) => {
-    return new Promise((resolve, reject) => {
-        if (loadedScripts.has(scriptPath)) {
-            // Script has already been loaded, resolve immediately
-            resolve();
-            return;
-        }
+function diffTime(dateString) {
+    const dateObject = new Date(dateString);
+    const currentTime = new Date();
 
-        const scriptElement = document.createElement('script');
-        scriptElement.src = scriptPath;
-        scriptElement.onload = () => {
-            // Script loaded successfully, resolve the promise and mark it as loaded
-            loadedScripts.add(scriptPath);
-            resolve();
-        };
-        scriptElement.onerror = reject;
+    const timeDifference = currentTime - dateObject; 
+    const timeInMinutes = timeDifference / (1000 * 60);
 
-        // Append the script to the body to initiate loading
-        document.body.appendChild(scriptElement);
-    });
-};
+    if (timeInMinutes < 60) {
+        return `${Math.floor(timeInMinutes)} minute${Math.floor(timeInMinutes) !== 1 ? 's' : ''}`;
+    } else {
+        const hours = Math.floor(timeInMinutes / 60);
+        const remainingMinutes = Math.floor(timeInMinutes % 60);
+        const hoursText = hours > 1 ? 'hours' : 'hour';
+        const minutesText = remainingMinutes > 0
+            ? `${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''}`
+            : '';
 
-function removeTrailingSlash(url) {
+        return `${hours} ${hoursText}${minutesText ? ` and ${minutesText}` : ''}`;
+    }
+}
+
+// Example usage
+// const ticketCreationTime = "2023-12-18 20:50:13";
+// const formattedDuration = formatTimeSinceCreation(ticketCreationTime);
+// console.log("Time Since Creation:", formattedDuration);
+
+
+
+
+const requestOptions = {
+    method: 'GET',
+    headers: {
+        'Authorization': token, 
+        'Content-Type': 'application/json'
+    }
+  }
+  
+async function getResponse() {
+    const response = await fetch(`${apiurl}` + 'Main/allTickets' ,requestOptions);
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
     
-    if (url.charAt(url.length - 1) === '/') {
+    return data;
+}
+let tickets = [];
+async function fetchData() {
+    try {
+        const data = await getResponse();
+        tickets = data;
+        // console.log(tickets);
+        const ticketContainer = document.getElementById("ticketContainer");
+        ticketContainer.innerHTML = "";
+        // tickeId: 22, ticketTitle: 'ticket 1', ticketDesc: 'desc test 1', ticketCreatedAt: '2023-12-18 17:16:13', userId: 22,
+        const ticketItem = tickets.map((ticket) => {
+           let tags = ticket.tags.split(',');
+           
+           let assignedUserImg = ticket.assignedUserImg.split(',');
+          
+            return (
+                `
+                <div class="col-sm-6 col-lg-5 mb-4">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="d-flex  align-items-center">
+                            <div class="avatar-online">
+                                <img src="${imgStore}${ticket.creatorImg}" alt class="w-px-40 h-auto rounded-circle" />
+                            </div>
+                            
+                            <h5 class="card-title mt-4 p-2">${ticket.ticketTitle}</h5>
+                            
+                            
+                        </div>
+                        <p class="card-text">
+                        ${ticket.ticketDesc}
+                        </p>
+                        <div class="d-flex ">
+                            ${
+                                tags.map((tag)=>{
+                                    return`
+                                    <span class="badge bg-label-dark ms-2">${tag}</span>
+                                    `
+                                }).join('')
+                            }
+                            
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div class="align-items-bottom">
+                                <p class="card-text mt-2"><small class="text-muted">${diffTime(ticket.ticketCreatedAt)}</small></p>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                            <div class="avatar-online">
+                            ${
+                                assignedUserImg.map((img)=>{
+                                    return `
+                                    <img src="${imgStore}${img}" alt="" class="w-px-30 h-auto rounded-circle" />
+                                    `
+                                }).join('')
+                            }
+                            </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    </div>
+                
+                `
+            )   
+        })
+        ticketContainer.innerHTML= ticketItem
        
-        return url.slice(0, -1);
+    } catch (error) {
+        console.error('Error:', error);
     }
-    
-    return url;
-}
-const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
-
-const getParams = target => {
-    console.log(target);
-    if (!target.result || !Array.isArray(target.result)) {
-        console.error("Invalid target", target.result);
-        return {};
-    }
-    // const cleandeUrl = removeTrailingSlash();
-    const values = target.result.slice(1);
-    console.log('values ' +values);
-    
-    const keys = Array.from(target.route.path.matchAll(/:(\w+)/g)).map(result => removeTrailingSlash(result[1]));
-    console.log('keys ' +keys);
-    // Ensure the lengths match to avoid array index out of bounds
-    if (keys.length !== values.length) {
-        console.error("Mismatched keys and values:", keys, values);
-        return {};
-    }
-
-    return Object.fromEntries(keys.map((key, i) => {
-        return [key, decodeURIComponent(values[i])]; // decodeURIComponent to handle slashes
-    }));
-};
-
-
-
-//Go to destination without refreshing 
-const NavigateTo = (url) => {
-    history.pushState(null , null , url);
-    router();
 }
 
-//Router 
-const router = async () =>{
-    const routes = [
-        { path: '/' , view : Dashboard},
-        { path: '/login' , view : Login},
-        { path: '/register' , view : Register},
-        { path: '/Add-Ticket' , view : AddTicket},
-        // { path: '/posts/:id' ,   view: PostView },
-        
+fetchData();
 
-    ];
 
-    //Test each route
-    const routeExists = routes.map(route =>{
-        return {
-            route: route,
-            result : location.pathname.match(pathToRegex(route.path))
-        }
-    })
-
-    let target = routeExists.find((routeExist)=>routeExist.result !== null);
-
-    const scriptPath = scriptMap[target.route.path];
-    if (scriptPath) {
-        await loadScriptOnce(scriptPath);
-    }
-
-    //Not found 
-    if(!target){
-        target = {
-            route : routes[0],
-            isMatch:true,
-        }
-    }
-    // const params = getParams(target);
-    // console.log(params);
-    // const view = target.route.view(params);
-    const view = new target.route.view(getParams(target));
-    document.querySelector("#app").innerHTML = await view.getHtml();
     
-    
-};
-
-window.addEventListener('popstate' , router);
-
-document.addEventListener('DOMContentLoaded', () =>{
-    document.body.addEventListener('click', (ev) =>{
-        ev.preventDefault();
-        if(ev.target.matches("[data-link]")){
-            NavigateTo(ev.target.href);
-        }
-    })
-    router();
-});
-
