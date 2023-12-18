@@ -48,9 +48,11 @@ function login(ev){
                     if(data.token){
                         localStorage.setItem('token', data.token);
                         const decodedPayload = decodeJWT(data.token);
+                        console.log(decodedPayload);
                         localStorage.setItem('id' ,decodedPayload.data.id);
                         localStorage.setItem('fullName' ,decodedPayload.data.full_name);
                         localStorage.setItem('email' ,decodedPayload.data.email);
+                        localStorage.setItem('image' ,decodedPayload.data.imgUrl);
 
                         window.location.href = '/';
                     }else{
