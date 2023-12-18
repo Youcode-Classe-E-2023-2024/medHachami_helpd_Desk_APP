@@ -1,5 +1,6 @@
 let selectedUserIds = [];
 const apiurl = "http://localhost/med_Hachami_HelpDesk_Ticketing_Sys/";
+
 const token = localStorage.getItem('token');
 function allowDrop(event) {
   event.preventDefault();
@@ -103,13 +104,21 @@ document.addEventListener("DOMContentLoaded", function () {
     .then(data => {
         // console.log(data); 
         tagDropDown.innerHTML = "";
-
+      let numOfTags = 0;
         data.forEach(option => {
+          
             const optionElement = document.createElement("option");
             optionElement.value = option.id; 
             optionElement.text = option.Name;   
             tagDropDown.appendChild(optionElement);
+            numOfTags += 1;
         }); 
+        $(tagDropDown).chosen();
+        tagDropDown.setAttribute("tabindex", numOfTags);
+        
+
+
+        // console.log(numOfTags);
     })
     .catch(error => {
         console.log("Error fetching status options:"+ error);
@@ -149,10 +158,10 @@ document.addEventListener("DOMContentLoaded", function () {
               userItem.classList.add("user-item", "d-flex", "mb-4", "pb-1");
               userItem.setAttribute("draggable", "true");
               userItem.setAttribute("data-user-id", user.id);
-            
+
               userItem.innerHTML = `
                   <div class="avatar flex-shrink-0 me-3">
-                      <img src="${user.imgUrl}"  alt="${user.full_name}" class="rounded" />
+                      <img src="${imgStore}${user.imgUrl}" alt="${user.full_name}" class="rounded" />
                   </div>
                   <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                       <div class="me-2">
@@ -196,7 +205,10 @@ document.addEventListener("DOMContentLoaded", function () {
 function addTicket(ev){
   ev.preventDefault(); 
   const ticketName = document.getElementById("name").value;
-  const tag = document.getElementById("tag").value; 
+
+  const tagDropDown = document.getElementById("tag");
+  const tagValues = $(tagDropDown).val(); 
+
   const status = document.getElementById("status").value; 
   const priority = document.getElementById("priority").value; 
   const description = document.getElementById("description").value; 
@@ -204,10 +216,14 @@ function addTicket(ev){
   let ticketName_error =  document.getElementById("ticketName_error");
   let description_error = document.getElementById("description_error");
   let assignedUsers_error = document.getElementById("assignedUsers_error");
+  let tags_error = document.getElementById("tags_error");
 
+  
 
     ticketName_error.textContent = '';
     description_error.textContent = '';
+    tags_error.textContent = '';
+    assignedUsers_error.textContent = '';
 
   if(!ticketName){
     ticketName_error.textContent = "*Ticket Name required";
@@ -219,18 +235,23 @@ function addTicket(ev){
   if(selectedUserIds.length == 0){
     assignedUsers_error.textContent = "*Assigning ticket requires";
   }
-  if(ticketName_error.textContent === '' && description_error.textContent === '' && assignedUsers_error.textContent === ''){
+  if(tagValues.length == 0){
+    tags_error.textContent = "*Tags are required";
+  }
+  console.log(tagValues);
+  console.log(tagValues.length);
+  if(ticketName_error.textContent === '' && description_error.textContent === '' && assignedUsers_error.textContent === '' && tags_error.textContent === ''){
 
-    
+    console.log('inside addticket');
     const data ={
       "title": ticketName,
       "description":description ,
       "priority":priority,
-      "tag":tag,
+      "tags":tagValues,
       "creatordId":localStorage.getItem('id'),
       "assignedTo":selectedUserIds
     }
-
+    console.log(data);
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -258,6 +279,8 @@ function addTicket(ev){
             }, 4000);
             console.log('Response:', data);
           }
+
+          windowlocation.href = 'index.html';
           
       })
       .catch(error => {
@@ -266,6 +289,8 @@ function addTicket(ev){
       });
   
     
+  }else{
+    console.log('outside');
   }
 
   
