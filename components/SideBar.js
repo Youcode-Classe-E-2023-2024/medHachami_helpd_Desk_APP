@@ -80,6 +80,14 @@ function generateSideBar() {
         </a>
         
       </li>
+      <li class="menu-item">
+        <a data-link href="/Assigned.html" class="menu-link menu-toggle">
+          <i class='bx bx-message-rounded-edit'></i>
+          <div data-i18n="Dashboards">Assigned Tickets</div>
+          
+        </a>
+        
+      </li>
 
      
     </ul>
