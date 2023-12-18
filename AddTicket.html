@@ -22,6 +22,9 @@
     <link rel="stylesheet" href="/static/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
 
     <!-- Page CSS -->
+    <link rel="stylesheet" href="static/css/multi.css">
+    <!-- <link rel="stylesheet" href="static/css/style.css"> -->
+    <link rel="stylesheet" href="static/css/chosen.css">
 
     <!-- Helpers -->
     <script src="/static/assets/vendor/js/helpers.js"></script>
@@ -70,16 +73,13 @@
                                     aria-describedby="basic-icon-default-fullname2" />
                                 </div>
                               </div>
-                              <div class="mb-3">
-                                <label class="form-label" for="basic-icon-default-company">Tag</label>
-                                <div class="input-group input-group-merge">
-                                    <label class="input-group-text" for="inputGroupSelect01">Options</label>
-                                    <select class="form-select" id="tag">
-                                      <option selected>Choose...</option>
-                                      
-                                    </select>
+                                <div class="mb-3">
+                                  <label class="form-label" for="basic-icon-default-company">Tag</label>
+                                  <span class="text-danger  p-1 mb-10" id="tags_error" > </span>  
+                                  <select data-placeholder="Select Tags" id="tag" multiple class="form-select chosen-select border-secondary" >
+                                  
+                                  </select>
                                 </div>
-                              </div>
                               <div class="mb-3">
                                 <label class="form-label" for="basic-icon-default-company">Status</label>
                                 <div class="input-group input-group-merge">
@@ -165,6 +165,17 @@
     <script src="/static/assets/vendor/js/bootstrap.js"></script>
     <script src="/static/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
     <script src="/static/assets/vendor/js/menu.js"></script>
+
+    <script src="./static/assets/vendor/js/jquery-3.3.1.min.js"></script>
+    <script src="./static/assets/vendor/js/popper.min.js"></script>
+    <script src="./static/assets/vendor/js/bootstrap.min.js"></script>
+    <script src="./static/assets/vendor/js/chosen.jquery.min.js"></script>
+    <!-- <script>
+      $(function(){
+    $(".chosen-select").chosen(); 
+    })
+    </script> -->
+
     <script src="./components/NavBar.js"></script>
     <script src="./components/SideBar.js"></script>
     <script src="./static/js/Add-Ticket.js"></script>
