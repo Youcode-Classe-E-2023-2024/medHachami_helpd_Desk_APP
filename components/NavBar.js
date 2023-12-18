@@ -1,3 +1,6 @@
+const imgStore = "http://localhost/med_Hachami_HelpDesk_Ticketing_Sys/public/store/";
+const img = localStorage.getItem("image");
+const id = localStorage.getItem("id");
 function generateNavbar() {
     return `
     <nav
@@ -30,7 +33,7 @@ function generateNavbar() {
         <li class="nav-item navbar-dropdown dropdown-user dropdown">
           <a class="nav-link dropdown-toggle  hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" >
             <div class="avatar avatar-online">
-              <img src="./static/assets/img/avatars/profile.png" alt class="w-px-40 h-auto rounded-circle" />
+              <img src="${imgStore}${img}" alt class="w-px-40 h-auto rounded-circle" />
             </div>
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
@@ -39,7 +42,7 @@ function generateNavbar() {
                 <div class="d-flex">
                   <div class="flex-shrink-0 me-3">
                     <div class="avatar avatar-online">
-                      <img src="./static/assets/img/avatars/profile.png" alt class="w-px-40 h-auto rounded-circle" />
+                      <img src="${imgStore}${img}" alt class="w-px-40 h-auto rounded-circle" />
                     </div>
                   </div>
                   <div class="flex-grow-1">
