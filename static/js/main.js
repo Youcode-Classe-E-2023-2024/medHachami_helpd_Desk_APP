@@ -24,6 +24,7 @@ function logOut(){
     localStorage.removeItem('id');
     localStorage.removeItem('fullName');
     localStorage.removeItem('email');
+    localStorage.removeItem('image');
     window.location.href = '/login.html';
 }
 
