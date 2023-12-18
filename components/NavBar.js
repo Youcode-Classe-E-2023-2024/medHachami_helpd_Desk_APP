@@ -1,6 +1,9 @@
 const imgStore = "http://localhost/med_Hachami_HelpDesk_Ticketing_Sys/public/store/";
 const img = localStorage.getItem("image");
 const id = localStorage.getItem("id");
+const token = localStorage.getItem('token');
+const apiurl = "http://localhost/med_Hachami_HelpDesk_Ticketing_Sys/";
+
 function generateNavbar() {
     return `
     <nav
