@@ -65,9 +65,33 @@ async function fetchData() {
                         <div class="d-flex  align-items-center">
                             <div class="avatar-online">
                                 <img src="${imgStore}${ticket.creatorImg}" alt class="w-px-40 h-auto rounded-circle" />
+                               
+                            </div>
+                            <div class="d-flex upd-del-Btn" >
+                                <button
+                                type="button"
+                                class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#smallModal"
+                                onclick="insertDataModal(${ticket.tickeId}, '${ticket.ticketTitle}');"
+                                style="background-color: transparent;width: 20px;"
+                                >
+                                    <i class='bx bxs-dashboard' ></i>
+                                </button>
+                                <button
+                                type="button"
+                                class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deletModal"
+                                onclick="insertDataModal2(${ticket.tickeId});"
+                                style="background-color: transparent;width: 20px;"
+                                >
+                                <i class='bx bx-trash-alt' ></i>
+                                </button>
+
                             </div>
                             
-                            <h5 class="card-title mt-4 p-2">${ticket.ticketTitle}</h5>
+                            <h5 class="card-title mt-4 p-2" onclick="navigateTo('${ticket.tickeId}')" style="cursor: pointer;" >${ticket.ticketTitle}</h5>
                             
                             
                         </div>
@@ -102,6 +126,7 @@ async function fetchData() {
                         </div>
                       </div>
                     </div>
+                    
                     </div>
                 
                 `
@@ -114,6 +139,123 @@ async function fetchData() {
     }
 }
 
+
+
+function insertDataModal(tickeId,title){
+    const ticketName =document.getElementById("title");
+    ticketName.innerHTML = title;
+    var status = document.getElementById("status").value;
+    
+    let saveBtn = document.getElementById("saveBtn");
+    
+    saveBtn.addEventListener('click' ,(event)=>{
+        event.preventDefault();
+        let smallModal = document.getElementById("smallModal");
+        let fade = document.querySelector(".modal-backdrop");
+        fade.style.display = "none";
+        smallModal.style.display = 'none';
+
+        updateTicket(status , tickeId);
+    });
+    
+}
+
+function insertDataModal2(tickeId){
+    let saveBtn = document.getElementById("deleteSaveBtn");
+   
+    saveBtn.addEventListener('click' ,(event)=>{
+        event.preventDefault();
+        let smallModal = document.getElementById("deletModal");
+        let fade = document.querySelector(".modal-backdrop ");
+        fade.style.display = "none";
+        smallModal.style.display = 'none';
+
+        deleteTicket(tickeId);
+        
+    });
+}
+
+function updateTicket(status , tickeId){
+    
+    fetch(`${apiurl}` + 'Main/editTicketStatus/'+ `${status}`+ '/' +`${tickeId}`,{
+        method: 'PUT',
+        headers: {
+            'Authorization': token, 
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response =>{
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
+    return response.json();
+    })
+    .then(data => {
+    console.log(data);
+        if(data.message){
+        
+        // let closeBtn = document.getElementById("close");
+        // closeBtn.addEventListener('click', function() {
+        //     let model =document.getElementById('smallModal');
+        //     model.setAttribute("aria-hidden",false);
+        //   });
+       
+        
+        let alert = document.getElementById("alert1");
+        alert.textContent = "Updated successfully" ;
+        alert.classList.add('show');
+        setTimeout(() => {
+            alert.classList.remove('show');
+        }, 4000);
+        console.log('Response:', data);
+        }
+
+        
+        
+    })
+    .catch(error => {
+        console.log("Error fetching status options:"+ error);
+        
+    });
+}
+
+function deleteTicket(ticketId){
+    fetch(`${apiurl}` + 'Main/deleteTicket/'+`${ticketId}`,{
+        method: 'DELETE',
+        headers: {
+            'Authorization': token, 
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response =>{
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
+    return response.json();
+    })
+    .then(data => {
+    console.log(data);
+        if(data.message){
+        
+        let alert = document.getElementById("alert2");
+        alert.textContent = "Deleted successfully" ;
+        alert.classList.add('show');
+        setTimeout(() => {
+            alert.classList.remove('show');
+        }, 4000);
+        fetchData();
+        
+        }
+
+        
+        
+    })
+    .catch(error => {
+        console.log("Error fetching status options:"+ error);
+        
+    });
+}
+
 fetchData();
-
-
