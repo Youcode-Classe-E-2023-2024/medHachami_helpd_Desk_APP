@@ -90,7 +90,7 @@ function generateSideBar() {
       </li>
       <li class="menu-item">
         <a data-link href="/MyTicket.html" class="menu-link menu-toggle">
-            <i class='menu-icon bx bx-add-to-queue'></i>
+          <i class='bx bxl-sketch'></i>
           <div data-i18n="Dashboards">My Tickets</div>
           
         </a>
@@ -128,12 +128,20 @@ async function getResponse() {
   
   return data;
 }
-
+let IncoTick;
 async function fetchData() {
   try {
       const data = await getResponse();
+       IncoTick = JSON.stringify(data);
+
       const incompTicket = document.getElementById("incompTicket");
-      incompTicket.textContent = JSON.stringify(data);
+      if(IncoTick !=0){
+        incompTicket.textContent = IncoTick;
+      }else{
+
+        incompTicket.style.display="none";
+      }
+      
       
      
   } catch (error) {
