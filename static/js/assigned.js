@@ -59,14 +59,14 @@ async function fetchData() {
           
             return (
                 `
-                <div class="col-sm-6 col-lg-5 mb-4">
+                <div class="col-sm-6 col-lg-5 mb-4" onclick="navigateTo('${ticket.tickeId}')">
                     <div class="card">
                       <div class="card-body">
                         <div class="d-flex  align-items-center">
                             <div class="avatar-online">
                                 <img src="${imgStore}${ticket.creatorImg}" alt class="w-px-40 h-auto rounded-circle" />
                             </div>
-                            
+                            ${IncoTick == 0 ? `<button class="btn btn-outline-info numOfTask">Closed</button>` : ''}
                             <h5 class="card-title mt-4 p-2">${ticket.ticketTitle}</h5>
                             
                             
@@ -115,5 +115,7 @@ async function fetchData() {
 }
 
 fetchData();
+
+
 
 
