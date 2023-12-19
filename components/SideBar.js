@@ -88,6 +88,14 @@ function generateSideBar() {
         </a>
         
       </li>
+      <li class="menu-item">
+        <a data-link href="/MyTicket.html" class="menu-link menu-toggle">
+            <i class='menu-icon bx bx-add-to-queue'></i>
+          <div data-i18n="Dashboards">My Tickets</div>
+          
+        </a>
+        
+      </li>
 
      
     </ul>
