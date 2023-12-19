@@ -1,6 +1,6 @@
 let selectedUserIds = [];
 
-
+let usersData ;
 
 function allowDrop(event) {
   event.preventDefault();
@@ -143,56 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
     });
 
-    //fetching users
-
-    const userListContainer = document.getElementById("userList");
-
-            
-      fetch(`${apiurl}` + 'Users/allUsers', requestOptions)
-      .then(response => response.json())
-      .then(users => {
-          // console.log(users);
-          usersData = users;
-          usersData.forEach(user => {
-              const userItem = document.createElement("li");
-              userItem.classList.add("user-item", "d-flex", "mb-4", "pb-1");
-              userItem.setAttribute("draggable", "true");
-              userItem.setAttribute("data-user-id", user.id);
-
-              userItem.innerHTML = `
-                  <div class="avatar flex-shrink-0 me-3">
-                      <img src="${imgStore}${user.imgUrl}" alt="${user.full_name}" class="rounded" />
-                  </div>
-                  <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                      <div class="me-2">
-                          <h6 class="mb-0">${user.full_name}</h6>
-                      </div>
-                  </div>
-              `;
-
-              // console.log(userItem);
-              userListContainer.appendChild(userItem);
-              const userItems = document.querySelectorAll(".user-item");
-            
-            userItems.forEach(function (item) {
-              item.addEventListener("dragstart", function (event) {
-                const userId = item.dataset.userId;
-                const userSrc = item.querySelector("img").getAttribute("src");
-                const userName = item.querySelector("h6").textContent;
-                // const imgUrl = item.querySelector("img").getAttribute("src");
-          
-                // console.log("Dragged User ID:", userId);
-                // console.log("Dragged User Src:", userSrc);
-                // console.log("Dragged User Name:", userName);
-              
-                event.dataTransfer.setData("text/plain", JSON.stringify({ userId, userSrc, userName }));
-              });
-             });
-      });
-      })
-      .catch(error => {
-          console.error("Error fetching user data:", error);
-      });
+   
 
       
             
@@ -294,6 +245,86 @@ function addTicket(ev){
   }
 
   
-  // console.log(selectedUserIds);
+
 }
 
+ //fetching users
+          
+//  let usersData = [];
+const userInputSearch = document.getElementById("userInputSearch");
+userInputSearch.addEventListener('keyup', function (event) {
+  event.preventDefault();
+  const usernameToSearch = event.target.value.trim().toLowerCase();
+  const foundUser = usersData.filter(user => user.full_name.toLowerCase().includes(usernameToSearch));
+  displayUsers(foundUser);
+});
+async function getUsersData() {
+  const response = await fetch(apiurl + 'Users/allUsers',{
+    method: 'GET',
+    headers: {
+        'Authorization': token, 
+        'Content-Type': 'application/json'
+       
+    }
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = await response.json();
+  return data;
+}
+
+
+
+async function fetchAndStoreUserData() {
+  try {
+    const data = await getUsersData();
+    usersData = data;
+    displayUsers(usersData);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+ function displayUsers(users) {
+   const userListContainer = document.getElementById("userList");
+   userListContainer.innerHTML = ""; 
+ 
+   users.forEach(user => {
+     const userItem = document.createElement("li");
+     userItem.classList.add("user-item", "d-flex", "mb-4", "pb-1");
+     userItem.setAttribute("draggable", "true");
+     userItem.setAttribute("data-user-id", user.id);
+ 
+     userItem.innerHTML = `
+         <div class="avatar flex-shrink-0 me-3">
+             <img src="${imgStore}${user.imgUrl}" alt="${user.full_name}" class="rounded" />
+         </div>
+         <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+             <div class="me-2">
+                 <h6 class="mb-0">${user.full_name}</h6>
+             </div>
+         </div>
+     `;
+ 
+     userListContainer.appendChild(userItem);
+   });
+ 
+   const userItems = document.querySelectorAll(".user-item");
+ 
+   userItems.forEach(function (item) {
+     item.addEventListener("dragstart", function (event) {
+       const userId = item.dataset.userId;
+       const userSrc = item.querySelector("img").getAttribute("src");
+       const userName = item.querySelector("h6").textContent;
+ 
+       event.dataTransfer.setData("text/plain", JSON.stringify({ userId, userSrc, userName }));
+     });
+   });
+ }
+ 
+ 
+ 
+ 
+ fetchAndStoreUserData();
+ 
