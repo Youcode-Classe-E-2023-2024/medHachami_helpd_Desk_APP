@@ -23,10 +23,7 @@ function diffTime(dateString) {
     }
 }
 
-// Example usage
-// const ticketCreationTime = "2023-12-18 20:50:13";
-// const formattedDuration = formatTimeSinceCreation(ticketCreationTime);
-// console.log("Time Since Creation:", formattedDuration);
+
 
 
 
@@ -64,7 +61,7 @@ async function fetchData() {
           
             return (
                 `
-                <div class="col-sm-6 col-lg-5 mb-4">
+                <div class="col-sm-6 col-lg-5 mb-4" onclick="navigateTo('${ticket.tickeId}')" >
                     <div class="card">
                       <div class="card-body">
                         <div class="d-flex  align-items-center">
