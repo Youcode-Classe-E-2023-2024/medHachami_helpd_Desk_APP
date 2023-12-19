@@ -255,4 +255,23 @@ background: #eee;
     right: 16px!important;
 }
 
+.upd-del-Btn{
+  position: relative;
+    left: 65%;
+    bottom: 35px;
+    gap: 8px;
+}
+.numOfTask{
+  position: relative;
+    left: 68%;
+    bottom: 35px;
+}
+.sendIcon{
+  font-size: 2rem!important;position: relative;right: 45px;margin-top: 7px;
+}
+.sendIcon:hover{
+  color: #0d6efd;
+  cursor: pointer;
+}
+
 /* End ticket */
