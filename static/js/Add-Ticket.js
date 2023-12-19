@@ -224,14 +224,15 @@ function addTicket(ev){
           if(data.message){
             let alert = document.getElementById("alert1");
             alert.textContent = data.message  ;
-            alert.classList.add('show');
+            
             setTimeout(() => {
-                alert.classList.remove('show');
-            }, 4000);
-            console.log('Response:', data);
+              alert.classList.add('show');
+               
+            }, 7000);
+            window.location.href = 'MyTicket.html';
           }
 
-          windowlocation.href = 'index.html';
+         
           
       })
       .catch(error => {
