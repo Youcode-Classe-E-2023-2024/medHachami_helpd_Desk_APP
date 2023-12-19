@@ -1,6 +1,5 @@
 
-const apiurl = "http://localhost/med_Hachami_HelpDesk_Ticketing_Sys/";
-const token = localStorage.getItem('token');
+
 
 
 function diffTime(dateString) {
