@@ -1,5 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 const ticketId = urlParams.get('ticketId');
+let displayData=false;
 let ticket = [];
 
 
@@ -19,18 +20,67 @@ async function getResponse() {
     
     return data;
 }
+async function getCommentResponse() {
+    const response = await fetch(`${apiurl}` + 'Main/comments/'+ `${ticketId}` ,{
+        method: 'GET',
+        headers: {
+            'Authorization': token, 
+            'Content-Type': 'application/json'
+        }
+    });
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    
+    return data;
+}
 
 async function fetchData() {
     try {
+        const dataComm = await getCommentResponse();
+        
+        const shortComment = dataComm.slice(0,2).map((comm)=>{
+            return(
+                `
+                <div class="ms-2 ml-6 d-flex gap-2  align-items-center" style="height: 55px;">
+                    <img src="${imgStore}${comm.imgUrl}" class="w-px-30 h-auto rounded-circle" alt="" srcset="">
+                    <div class="comment">
+                        <h5>${comm.full_name}</h5>
+                        <p>${comm.text}</p>
+                    </div>
+                                     
+                </div>
+                
+                `
+            )
+        })
+
+        const allComments = dataComm.map((comm)=>{
+            return(
+                `
+                <div class="ms-2 ml-6 d-flex gap-2  align-items-center" style="height: 55px;">
+                    <img src="${imgStore}${comm.imgUrl}" class="w-px-30 h-auto rounded-circle" alt="" srcset="">
+                    <div class="comment">
+                        <h5>${comm.full_name}</h5>
+                        <p>${comm.text}</p>
+                    </div>
+                                     
+                </div>
+                
+                `
+            )
+        })
         const data = await getResponse();
         ticket = data;
-        console.log(ticket);
+        // console.log(ticket);
         const ticketContainer = document.getElementById("ticketContainer");
         
         ticketContainer.innerHTML = "";
         const ticketItem = ticket.map((ticket) => {
             const tags = ticket.tags.split(',');
             const assignedTo = ticket.assignedUserImg.split(',');
+           
             return (
                 `
                 <div class="col-xl" >   
@@ -56,6 +106,11 @@ async function fetchData() {
                                     aria-describedby="basic-icon-default-fullname2" ><i class='bx bxs-arrow-to-top sendIcon' onclick="addComment('${ticket.tickeId}')" ></i></input>
                                     
                             
+                        </div>
+                        <div class="d-flex flex-column commentContainer" id="commentContainer">
+                            ${displayData ? `<p class="seeAll" onclick="seeAll(event)">Collapse</p>`:`<p class="seeAll" onclick="seeAll(event)">See All</p>`}
+                            
+                            ${!displayData ? shortComment : allComments}
                         </div>
                     </div>
                 </div> 
@@ -115,7 +170,7 @@ async function fetchData() {
                     </div>
                        
                 </div>
-                    </div>
+                </div>
                 </div>
                 </div>
                 `
@@ -130,10 +185,12 @@ async function fetchData() {
 
 function addComment(tickeId){
     // event.preventDefault();
-    const comment = document.getElementById("commentInput").value;
+    const commentInput = document.getElementById("commentInput");
+    let comment = commentInput.value 
     data = {
         comment: comment
     }
+    
     fetch(`${apiurl}` + 'Main/addComment/'+tickeId, {
         method:'POST',
         headers: {
@@ -152,16 +209,35 @@ function addComment(tickeId){
       .then(data => {
         console.log(data);
           if(data.message){
-            alert('commnt ');
+            commentInput.value ='';
           }
 
-         
+          fetchData();
           
       })
       .catch(error => {
           console.log("Error fetching status options:"+ error);
           
       });
+   
 }
+
+function seeAll(event){
+    event.preventDefault();
+   
+   
+    if(displayData){
+        
+        displayData = false;
+        
+    }else{
+        displayData = true;
+    }
+    fetchData();
+    
+    
+    
+}
+
 
 fetchData();
