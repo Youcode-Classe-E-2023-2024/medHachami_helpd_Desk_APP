@@ -132,7 +132,17 @@ async function fetchData() {
                 `
             )   
         })
-        ticketContainer.innerHTML= ticketItem
+        if(tickets.length === 0) {
+            let nodata = document.createElement("h2");
+            nodata.textContent = "You have no tickets";
+            nodata.classList.add("text-dark"); 
+            ticketContainer.appendChild(nodata);
+            
+            
+        }else{
+            ticketContainer.innerHTML= ticketItem;
+        }
+        
        
     } catch (error) {
         console.error('Error:', error);
